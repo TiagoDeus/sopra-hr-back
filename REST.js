@@ -12,7 +12,7 @@ REST_ROUTER.prototype.handleRoutes = function(router,connection,md5) {
     });
 
     router.get("/worker",function(req,res){
-        var query = "SELECT * FROM ??";
+        var query = "SELECT id,name,surname,date_format(birth_date,'%d/%m/%Y') as birth_date,document_id,document_type,date_format(startup_date,'%d/%m/%Y') as startup_date,salary FROM ??";
         var table = ["worker"];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
@@ -27,7 +27,7 @@ REST_ROUTER.prototype.handleRoutes = function(router,connection,md5) {
     });
 
     router.get("/worker/:worker_id",function(req,res){
-        var query = "SELECT * FROM ?? WHERE ??=?";
+        var query = "SELECT id,name,surname,date_format(birth_date,'%d/%m/%Y') as birth_date,document_id,document_type,date_format(startup_date,'%d/%m/%Y') as startup_date,salary FROM ?? WHERE ??=?";
         var table = ["worker","id",req.params.worker_id];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
@@ -51,9 +51,8 @@ REST_ROUTER.prototype.handleRoutes = function(router,connection,md5) {
                 console.log("error", "Error executing MySQL query: "+query1);
             } 
         });
-        var query2 = "INSERT INTO ??(??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?,?)";
-        var table2 = ["worker","id","name","surname","birth_date","document_id","document_type","startup_date","salary",
-            rows1[0].worker_id,req.body.name,req.body.surname,req.body.birth_date,req.body.document_id,req.body.document_type,req.body.startup_date,req.body.salary];
+        var query2 = "INSERT INTO ??(id,name,surname,str_to_date(birth_date,'%d/%m/%Y'),document_id,document_type,str_to_date(startup_date,'%d/%m/%Y') VALUES (?,?,?,?,?,?,?,?)";
+        var table2 = ["worker",rows1[0].worker_id,req.body.name,req.body.surname,req.body.birth_date,req.body.document_id,req.body.document_type,req.body.startup_date,req.body.salary];
         query2 = mysql.format(query2,table2);
         connection.query(query,function(err,rows2){
             if(err) {

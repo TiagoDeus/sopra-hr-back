@@ -152,4 +152,82 @@ router.post('/search', function (req, res) {
     );
 });
 
+
+router.get('/:worker_id/technology', function (req, res) {
+    console.log("debug", "fetching worker technology: " + req.params.worker_id);
+    models.Technology.findAll({
+        where: {
+            worker_id: req.params.worker_id
+        },
+        order: [['subcategory_id', 'ASC'],['created_at', 'DESC']],
+        include: [
+            {
+                model: models.TypeTechnologySubCategory, as: 'subcategory', include: [
+                    {model: models.TypeTechnologyCategory, as: 'category'}
+                ]
+            },{
+                model: models.Experience, as: 'experiences', include: [
+                    {model: models.TypeClient, as: 'client'}
+                ]
+            },
+            {model: models.User, as: 'created_by', attributes: ['username']},
+            {model: models.User, as: 'updated_by', attributes: ['username']}
+        ]
+    }).
+    then(
+        function (technologies) {
+            console.log("success", "Retrieved " + technologies.length + " technology(ies)");
+
+            var technologiesData = (JSON.parse(JSON.stringify(technologies)));
+
+            models.utils.cleanJson(technologiesData);
+
+            res.json({"error": false, "message": "success", "technologies": technologiesData});
+        },
+        function (err) {
+            console.log("error", "Error fetching worker technologies: " + err);
+            res.json({"error": true, "message": "Error fetching worker technologies"});
+        }
+    );
+});
+
+
+router.get('/:worker_id/functional_area', function (req, res) {
+    console.log("debug", "fetching worker functional areas: " + req.params.worker_id);
+    models.FunctionalArea.findAll({
+        where: {
+            worker_id: req.params.worker_id
+        },
+        order: [['subcategory_id', 'ASC'],['created_at', 'DESC']],
+        include: [
+            {
+                model: models.TypeFunctionalAreaSubCategory, as: 'subcategory', include: [
+                {model: models.TypeFunctionalAreaCategory, as: 'category'}
+            ]
+            },{
+                model: models.Experience, as: 'experiences', include: [
+                    {model: models.TypeClient, as: 'client'}
+                ]
+            },
+            {model: models.User, as: 'created_by', attributes: ['username']},
+            {model: models.User, as: 'updated_by', attributes: ['username']}
+        ]
+    }).
+    then(
+        function (functionalAreas) {
+            console.log("success", "Retrieved " + functionalAreas.length + " functional area(s)");
+
+            var functionalAreasData = (JSON.parse(JSON.stringify(functionalAreas)));
+
+            models.utils.cleanJson(functionalAreasData);
+
+            res.json({"error": false, "message": "success", "functional_areas": functionalAreasData});
+        },
+        function (err) {
+            console.log("error", "Error fetching worker functional areas: " + err);
+            res.json({"error": true, "message": "Error fetching worker functional areas"});
+        }
+    );
+});
+
 module.exports = router;

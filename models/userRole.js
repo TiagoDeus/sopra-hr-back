@@ -1,23 +1,23 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-	var TypeClient = sequelize.define('TypeClient', {
+	var UserRole = sequelize.define('UserRole', {
 		id: {
 			type:DataTypes.INTEGER, 
 			primaryKey:true, 
 			autoIncrement: true,
-			comment:'client type id'
+			comment:'role type id'
 		},
 		description: {
 			type:DataTypes.STRING(50), 
 			allowNull:false, 
-			comment:'client type description'
+			comment:'role type description'
 		}
 	},{
 		timestamps: false,
 		underscored: true,
-		tableName: 'tp_client',
-		comment: 'client types'
+		tableName: 'user_role',
+		comment: 'user role types'
 	});
-	return TypeClient;
+	return UserRole;
 };

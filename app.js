@@ -17,25 +17,27 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/worker',worker);
-app.use('/type', type);
-
-
 // Allow Cross Domain
-app.use(function(req, res, next) {
+app.all(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,Connection,'
+        + 'Content-Length,X-Requested-With,X-Powered-By,ETag,Accept,Cache-Control,Pragma'
+        + 'Referer,Origin,Host,Accept-Encoding,Accept-Language');
 
     // intercept OPTIONS method
     if ('OPTIONS' == req.method) {
-      res.send(200);
+      res.status(200).end();
     }
     else {
       next();
     }
 });
+
+app.use('/', routes);
+app.use('/worker',worker);
+app.use('/type', type);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

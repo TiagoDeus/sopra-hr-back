@@ -1,42 +1,53 @@
 "use strict";
 
-var utils      = require('../utils');
+var utils = require('../utils');
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     var WorkerAvailability = sequelize.define('WorkerAvailability', {
         id: {
-            type:DataTypes.INTEGER, 
-            primaryKey:true,
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
             comment: 'worker availability id'
         },
         starting_at: {
-            type:DataTypes.DATEONLY, 
-            allowNull:false,
+            type: DataTypes.DATEONLY,
+            allowNull: false,
             comment: 'worker availability starting date',
-            get: function() {return utils.getTimestamp(this,'starting_at');}
+            get: function () {
+                return utils.getTimestamp(this, 'starting_at');
+            },
+            set: function (starting_at) {
+                return utils.setDateOnly(starting_at, this, 'starting_at');
+            }
         },
         ending_at: {
-            type:DataTypes.DATEONLY,
+            type: DataTypes.DATEONLY,
             comment: 'worker availability ending date',
-            get: function() {return utils.getTimestamp(this,'ending_at');}
+            get: function () {
+                return utils.getTimestamp(this, 'ending_at');
+            },
+            set: function (ending_at) {
+                return utils.setDateOnly(ending_at, this, 'ending_at');
+            }
         },
         motive: {
-            type:DataTypes.TEXT, 
+            type: DataTypes.TEXT,
             comment: 'availability motive'
         },
         visible_agency: {
-            type:DataTypes.BOOLEAN, 
+            type: DataTypes.BOOLEAN,
             comment: 'visible in the agency'
         },
         visible_department: {
-            type:DataTypes.BOOLEAN, 
+            type: DataTypes.BOOLEAN,
             comment: 'visible in the department'
         },
         visible_company: {
-            type:DataTypes.BOOLEAN, 
+            type: DataTypes.BOOLEAN,
             comment: 'visible in the company'
         }
-    },{
+    }, {
         underscored: true,
         timestamps: false,
         tableName: 'worker_availability',

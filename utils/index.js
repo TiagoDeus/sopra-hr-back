@@ -24,6 +24,17 @@ Util.getTimestamp = function (model, col) {
     }
 };
 
+Util.setDateOnly = function (value, model, col) {
+    //var value = model.getDataValue(col);
+    if (value) {
+        var pattern = /(\d{2})\/(\d{2})\/(\d{4})/;
+        var dt = new Date(value.replace(pattern,'$3-$2-$1'));
+        return model.setDataValue(col, dt);
+    } else {
+        return null;
+    }
+};
+
 Util.groupLatestBySubcategory = function (array) {
     console.log('debug', "groupLatestBySubcategory: " + array)
     if (array && array.length > 1) {

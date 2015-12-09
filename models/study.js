@@ -1,53 +1,64 @@
 "use strict";
 
-var utils      = require('../utils');
+var utils = require('../utils');
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     var Study = sequelize.define('Study', {
         id: {
-            type:DataTypes.INTEGER, 
-            primaryKey:true,
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
             comment: 'study id'
         },
         course: {
-            type:DataTypes.STRING(200), 
+            type: DataTypes.STRING(200),
             comment: 'course name'
         },
         institution: {
-            type:DataTypes.STRING(200), 
+            type: DataTypes.STRING(200),
             comment: 'education institution'
         },
         grade: {
-            type:DataTypes.DECIMAL(2,1), 
+            type: DataTypes.DECIMAL(2, 1),
             comment: 'final grade'
         },
         starting_at: {
-            type:DataTypes.DATEONLY, 
-            allowNull:false,
+            type: DataTypes.DATEONLY,
+            allowNull: false,
             comment: 'course iniciation date',
-            get: function() {return utils.getTimestamp(this,'starting_at');}
+            get: function () {
+                return utils.getTimestamp(this, 'starting_at');
+            },
+            set: function (starting_at) {
+                return utils.setDateOnly(starting_at, this, 'starting_at');
+            }
         },
         ending_at: {
-            type:DataTypes.DATEONLY, 
-            allowNull:false,
+            type: DataTypes.DATEONLY,
+            allowNull: false,
             comment: 'course ending date',
-            get: function() {return utils.getTimestamp(this,'ending_at');}
+            get: function () {
+                return utils.getTimestamp(this, 'ending_at');
+            },
+            set: function (ending_at) {
+                return utils.setDateOnly(ending_at, this, 'ending_at');
+            }
         },
         country: {
-            type:DataTypes.STRING(50), 
+            type: DataTypes.STRING(50),
             comment: 'country where the degree was taken'
         },
         observation: {
-            type:DataTypes.TEXT, 
+            type: DataTypes.TEXT,
             comment: 'course observations'
         }
-    },{
+    }, {
         underscored: true,
         timestamps: false,
         tableName: 'study',
         comment: 'worker studies',
         classMethods: {
-            associate: function(models) {
+            associate: function (models) {
                 Study.belongsTo(models.TypeDegree, {
                     as: 'degree',
                     comment: 'degree id',

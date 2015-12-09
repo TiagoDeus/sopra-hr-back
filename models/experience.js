@@ -1,33 +1,44 @@
 "use strict";
 
-var utils      = require('../utils');
+var utils = require('../utils');
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     var Experience = sequelize.define('Experience', {
         id: {
-            type:DataTypes.INTEGER, 
-            primaryKey:true,
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
             comment: 'experience id'
         },
         starting_at: {
-            type:DataTypes.DATEONLY, 
-            allowNull:false,
+            type: DataTypes.DATEONLY,
+            allowNull: false,
             comment: 'experience in client starting date',
-            get: function() {return utils.getTimestamp(this,'starting_at');}
+            get: function () {
+                return utils.getTimestamp(this, 'starting_at');
+            },
+            set: function (starting_at) {
+                return utils.setDateOnly(starting_at, this, 'starting_at');
+            }
         },
         ending_at: {
-            type:DataTypes.DATEONLY, 
-            allowNull:false,
+            type: DataTypes.DATEONLY,
+            allowNull: false,
             comment: 'experience in client ending date',
-            get: function() {return utils.getTimestamp(this,'ending_at');}
+            get: function () {
+                return utils.getTimestamp(this, 'ending_at');
+            },
+            set: function (ending_at) {
+                return utils.setDateOnly(ending_at, this, 'ending_at');
+            }
         }
-    },{
+    }, {
         underscored: true,
         timestamps: false,
         tableName: 'experience',
         comment: 'experience in client data',
         classMethods: {
-            associate: function(models) {
+            associate: function (models) {
                 Experience.belongsToMany(models.Technology, {
                     as: 'technologies',
                     through: 'experience_technology',

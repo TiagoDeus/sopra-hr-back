@@ -1,31 +1,37 @@
 "use strict";
 
-var utils      = require('../utils');
+var utils = require('../utils');
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     var Career = sequelize.define('Career', {
         id: {
-            type:DataTypes.INTEGER, 
-            primaryKey:true,
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
             comment: 'career id'
         },
         starting_at: {
-            type:DataTypes.DATEONLY, 
-            allowNull:false,
+            type: DataTypes.DATEONLY,
+            allowNull: false,
             comment: 'career starting date',
-            get: function() {return utils.getTimestamp(this,'starting_at');}
+            get: function () {
+                return utils.getTimestamp(this, 'starting_at');
+            },
+            set: function (starting_at) {
+                return utils.setDateOnly(starting_at, this, 'starting_at');
+            }
         },
         observation: {
-            type:DataTypes.TEXT, 
+            type: DataTypes.TEXT,
             comment: 'career observations'
         }
-    },{
+    }, {
         underscored: true,
         timestamps: false,
         tableName: 'career',
         comment: 'worker career data',
         classMethods: {
-            associate: function(models) {
+            associate: function (models) {
                 Career.belongsTo(models.TypeCompanyLevel, {
                     as: 'company_level',
                     comment: 'worker company level',

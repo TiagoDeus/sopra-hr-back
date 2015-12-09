@@ -28,6 +28,73 @@ router.get('/', function (req, res) {
     );
 });
 
+
+router.post('/', function (req, res) {
+    console.log("debug", "Creating worker");
+    models.Worker.create({
+        name: req.body.worker.name,
+        surname: req.body.worker.surname,
+        birthday_at: req.body.worker.birthday_at,
+        email: req.body.worker.email,
+        document_number: req.body.worker.document_number,
+        document_type_id: req.body.worker.document_type_id,
+        startup_at: req.body.worker.startup_at,
+        salary: req.body.worker.salary,
+        created_by_id: 1, // TODO authentication
+        updated_by_id: 1
+    }).then(
+        function (worker) {
+            console.log("success", "Created worker: " + worker.id);
+            res.json({"error": false, "message": "success", "worker": {"id": worker.id}});
+        },
+        function (err) {
+            console.log("error", "Error creating worker: " + err);
+            res.json({"error": true, "message": "Error creating worker"});
+        }
+    );
+});
+
+
+router.put('/:worker_id', function (req, res) {
+    console.log("debug", "Updating worker");
+    var fields = ['updated_by_id'];
+    if (req.body.worker.name) fields.push('name');
+    if (req.body.worker.surname) fields.push('surname');
+    if (req.body.worker.birthday_at) fields.push('birthday_at');
+    if (req.body.worker.email) fields.push('email');
+    if (req.body.worker.document_number) fields.push('document_number');
+    if (req.body.worker.document_type_id) fields.push('document_type_id');
+    if (req.body.worker.startup_at) fields.push('startup_at');
+    if (req.body.worker.salary) fields.push('salary');
+    models.Worker.update({
+            name: req.body.worker.name,
+            surname: req.body.worker.surname,
+            birthday_at: req.body.worker.birthday_at,
+            email: req.body.worker.email,
+            document_number: req.body.worker.document_number,
+            document_type_id: req.body.worker.document_type_id,
+            startup_at: req.body.worker.startup_at,
+            salary: req.body.worker.salary,
+            updated_by_id: 1 // TODO authentication
+        },
+        {
+            fields: fields,
+            where: {
+                id: req.params.worker_id
+            }
+        }
+    ).then(
+        function (worker) {
+            console.log("success", "Updating worker: " + worker.id);
+            res.json({"error": false, "message": "success"});
+        },
+        function (err) {
+            console.log("error", "Error updating worker: " + err);
+            res.json({"error": true, "message": "Error updating worker"});
+        }
+    );
+});
+
 router.get('/:worker_id', function (req, res) {
     console.log("debug", "Searching worker: " + req.params.worker_id);
     models.Worker.findById(req.params.worker_id, {
@@ -126,6 +193,11 @@ router.post('/search', function (req, res) {
                     email: {
                         $like: '%' + req.body.text + '%'
                     }
+                },
+                {
+                    document_number: {
+                        $like: '%' + req.body.text + '%'
+                    }
                 }
             ]
         },
@@ -159,13 +231,13 @@ router.get('/:worker_id/technology', function (req, res) {
         where: {
             worker_id: req.params.worker_id
         },
-        order: [['subcategory_id', 'ASC'],['created_at', 'DESC']],
+        order: [['subcategory_id', 'ASC'], ['created_at', 'DESC']],
         include: [
             {
                 model: models.TypeTechnologySubCategory, as: 'subcategory', include: [
-                    {model: models.TypeTechnologyCategory, as: 'category'}
-                ]
-            },{
+                {model: models.TypeTechnologyCategory, as: 'category'}
+            ]
+            }, {
                 model: models.Experience, as: 'experiences', include: [
                     {model: models.TypeClient, as: 'client'}
                 ]
@@ -198,13 +270,13 @@ router.get('/:worker_id/functional_area', function (req, res) {
         where: {
             worker_id: req.params.worker_id
         },
-        order: [['subcategory_id', 'ASC'],['created_at', 'DESC']],
+        order: [['subcategory_id', 'ASC'], ['created_at', 'DESC']],
         include: [
             {
                 model: models.TypeFunctionalAreaSubCategory, as: 'subcategory', include: [
                 {model: models.TypeFunctionalAreaCategory, as: 'category'}
             ]
-            },{
+            }, {
                 model: models.Experience, as: 'experiences', include: [
                     {model: models.TypeClient, as: 'client'}
                 ]

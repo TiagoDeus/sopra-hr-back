@@ -17,11 +17,11 @@ module.exports = function (sequelize, DataTypes) {
             comment: 'username'
         },
         password: {
-            type: DataTypes.STRING(20),
+            type: DataTypes.STRING(50),
             allowNull: false,
             comment: 'user surname',
             get: function () {
-                return null;
+                return null; // Never gets the password
             }
         }
     }, {

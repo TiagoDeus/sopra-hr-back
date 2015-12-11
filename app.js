@@ -8,6 +8,7 @@ var md5 = require('MD5');
 var routes = require('./routes/index');
 var worker = require('./routes/worker');
 var type = require('./routes/type');
+var user = require('./routes/user');
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.all('/*', function(req, res, next) {
 app.use('/', routes);
 app.use('/worker',worker);
 app.use('/type', type);
+app.use('/user', user);
 
 
 // catch 404 and forward to error handler

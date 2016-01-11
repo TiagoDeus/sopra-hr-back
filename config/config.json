@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "Sopra2015",
+    "database": "soprahr-dev",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "Sopra2015",
+    "database": "soprahr-test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "Sopra2015",
+    "database": "soprahr-pro",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
